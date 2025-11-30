@@ -2,33 +2,54 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-// --- Icon components (Inline SVGs for stability) ---
-const IconSearch = (props) => (
+// --- TypeScript Interfaces ---
+interface Hospital {
+    id: number;
+    name: string;
+    address: string;
+    rating: number;
+    specialties: string[];
+    distance: number;
+    isPremium: boolean;
+    imageUrl: string;
+    phone: string;
+}
+
+interface HospitalCardProps {
+    hospital: Hospital;
+    onClick: () => void;
+    onCall: (phone: string) => void;
+}
+
+// --- Icon components (Inline SVGs with TypeScript types) ---
+type IconProps = React.SVGProps<SVGSVGElement>;
+
+const IconSearch = (props: IconProps) => (
     <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
     </svg>
 );
-const IconMapPin = (props) => (
+const IconMapPin = (props: IconProps) => (
     <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" />
     </svg>
 );
-const IconStar = (props) => (
+const IconStar = (props: IconProps) => (
     <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
     </svg>
 );
-const IconHeart = (props) => (
+const IconHeart = (props: IconProps) => (
     <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M19 14c1.49-1.46 3-3.21 3-5.5A7 7 0 0 0 15.5 3L12 6.5 8.5 3A7 7 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
     </svg>
 );
-const IconUsers = (props) => (
+const IconUsers = (props: IconProps) => (
     <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
     </svg>
 );
-const IconPhone = (props) => (
+const IconPhone = (props: IconProps) => (
     <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-8.2-8.2A19.79 19.79 0 0 1 2 4.18V2.82c0-1.1.9-2 2-2 1.45 0 2.8.31 4.1.91l.83.47a2 2 0 0 1 1 1.76v3.29a2 2 0 0 1-.6 1.35l-1.92 1.92a15.7 15.7 0 0 0 6.27 6.27l1.92-1.92a2 2 0 0 1 1.35-.6h3.29c.88 0 1.62.42 2.18 1.15z"/>
     </svg>
@@ -37,7 +58,7 @@ const IconPhone = (props) => (
 
 // --- Hospital Data Definition ---
 
-const getPlaceholderUrl = (id) => {
+const getPlaceholderUrl = (id: number): string => {
     // Image type: 1=Building/Banner, 2=Team/Staff, 3=Equipment
     const type = id % 3;
     let text, color, size;
@@ -58,7 +79,7 @@ const getPlaceholderUrl = (id) => {
     return `https://placehold.co/${size}/${color}?text=${text}`;
 };
 
-const hospitalData = [
+const hospitalData: Hospital[] = [
     {
         id: 1,
         name: "Apollo Hospitals Dhaka",
@@ -131,7 +152,7 @@ const allSpecialties = ['All', ...new Set(hospitalData.flatMap(h => h.specialtie
 
 // --- Hospital Card Component ---
 
-const HospitalCard = ({ hospital, onClick, onCall }) => {
+const HospitalCard: React.FC<HospitalCardProps> = ({ hospital, onClick, onCall }) => {
     // Cleaner color palette choices
     const accentColor = hospital.isPremium ? 'text-indigo-600' : 'text-slate-600';
     const accentBg = hospital.isPremium ? 'bg-indigo-50' : 'bg-slate-100';
@@ -154,7 +175,10 @@ const HospitalCard = ({ hospital, onClick, onCall }) => {
                     src={hospital.imageUrl}
                     alt={hospital.name}
                     className="w-full h-full object-cover rounded-t-xl"
-                    onError={(e) => { e.target.onerror = null; e.target.src = "https://placehold.co/400x200/CCCCCC/000000?text=No+Image"; }}
+                    onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => { 
+                        (e.target as HTMLImageElement).onerror = null; 
+                        (e.target as HTMLImageElement).src = "https://placehold.co/400x200/CCCCCC/000000?text=No+Image"; 
+                    }}
                 />
                 {hospital.isPremium && (
                     <div className="absolute top-3 right-3 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-full flex items-center shadow-md">
@@ -243,21 +267,21 @@ export default function App() {
 
                 return matchesSpecialty && matchesSearch;
             })
-            .sort((a, b) => b.isPremium - a.isPremium || b.rating - a.rating); // Premium hospitals displayed first, then by rating
+            .sort((a, b) => b.isPremium as unknown as number - (a.isPremium as unknown as number) || b.rating - a.rating); // Premium hospitals displayed first, then by rating
 
     }, [searchTerm, selectedSpecialty]);
 
     // Custom Message Handler (replaces alert())
-    const showMessage = (msg) => {
+    const showMessage = (msg: string) => {
         setMessage(msg);
         setTimeout(() => setMessage(''), 3000);
     };
 
-    const handleCardClick = (hospitalName) => {
+    const handleCardClick = (hospitalName: string) => {
         showMessage(`Navigating to the details page for "${hospitalName}".`);
     };
 
-    const handleCallClick = (phoneNumber) => {
+    const handleCallClick = (phoneNumber: string) => {
         showMessage(`Calling: ${phoneNumber} (Demo only, actual call functionality is not implemented)`);
     };
 

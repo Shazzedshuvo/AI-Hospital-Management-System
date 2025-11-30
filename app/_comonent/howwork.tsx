@@ -71,7 +71,8 @@ const itemVariants = {
 };
 
 export default function HowItWorksSection() {
-    const [hoveredIndex, setHoveredIndex] = useState(null);
+    const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+
 
     return (
         <section className="px-4 py-16 sm:py-24 bg-white">

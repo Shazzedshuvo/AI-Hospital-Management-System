@@ -5,7 +5,8 @@ import { motion } from "framer-motion";
 import { FaStethoscope } from "react-icons/fa";
 import Link from "next/link";
 import { FiHeart } from "react-icons/fi";
-import VoiceSearchComponent from "@/app/_comonent/VoiceSearchComponent";
+
+
 
 // --- NAVBAR Component ---
 const Navbar = () => {
@@ -57,6 +58,9 @@ const Navbar = () => {
       </nav>
     );
 };
+
+
+
 
 // --- HERO SECTION Component ---
 export default function HeroSectionOne() {
@@ -135,7 +139,7 @@ export default function HeroSectionOne() {
           </motion.div>
 
           
-<div className=" mt-10 w-full"><VoiceSearchComponent></VoiceSearchComponent></div>
+<div className=" mt-10 w-full"></div>
           {/* Image Section - আপনার আসল ইমেজ লিঙ্ক অক্ষত রাখা হয়েছে */}
           <motion.div
             className="relative w-full max-w-5xl mx-auto overflow-hidden rounded-3xl shadow-2xl group mt-16 border-4 border-white"
@@ -178,6 +182,9 @@ export default function HeroSectionOne() {
             </div>
           </motion.div>
         </div>
+        
       </div>
+
+      
     );
 }
